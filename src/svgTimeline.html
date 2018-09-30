@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!--<link rel="stylesheet" href="./static/lib/bootstrap/css/bootstrap.css">-->
+    <title>时间轴数据</title>
+    <style>
+        #canvas{
+            position: relative;
+            border: 1px solid lightgrey;
+        }
+        circle,line{
+            transition: all ease-in .1s;
+        }
+        .t-start-guides-g:hover .t-start-guides-c,
+        .t-start-guides-g:hover .t-end-guides-c{
+            fill: #04A7F1;
+        }
+        .t-start-guides-g:hover .t-start-guides-o-c,
+        .t-start-guides-g:hover .t-end-guides-o-c,
+        .t-start-guides-g:hover .t-start-guides-l,
+        .t-start-guides-g:hover .t-end-guides-l{
+            opacity: 1;
+        }
+        /*.t-arrow.active{*/
+            /*stroke: #fff !important;*/
+        /*}*/
+        .t-start-guides-g:hover .t-arrow{
+
+        }
+        /*#tooltip{*/
+            /*top: 0;*/
+            /*left: 0;*/
+            /*position: absolute;*/
+            /*background-color: rgba(0, 0, 0, 0.5);*/
+            /*width: 100px;*/
+            /*height: 60px;*/
+            /*color: #fff;*/
+            /*padding: 5px;*/
+            /*border-radius: 4px;*/
+            /*display: none;*/
+            /*z-index: 10;*/
+        /*}*/
+        /*.t-start-guides-g:hover .t-start-guides-o-c,*/
+        /*.t-end-guides-g:hover .t-end-guides-o-c,*/
+        /*.t-start-guides-o-c:hover,*/
+        /*.t-end-guides-o-c:hover{*/
+            /*opacity: 1;*/
+        /*}*/
+        /*.t-start-guides-g:hover .t-start-guides-l,*/
+        /*.t-end-guides-g:hover .t-end-guides-l{*/
+            /*opacity: 1;*/
+        /*}*/
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>
+                放大倍数:
+                <span id="times"></span>
+                <button id="showAll" class="btn btn-primary" disabled>全部展示</button>
+                <button id="addOne" class="btn btn-primary" disabled>添加一条</button>
+                <button id="showOne" class="btn btn-primary" disabled>展示一条</button>
+                <button id="showBatch" class="btn btn-primary" disabled>展示一堆</button>
+                <button id="play" class="btn btn-primary">播放</button>
+                <button id="pause" class="btn btn-primary">暂停</button>
+                <button id="clearAll" class="btn btn-primary" disabled>清空</button>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button id="moveUp" type="button" class="btn btn-secondary">向上移</button>
+                    <button id="moveDown" type="button" class="btn btn-secondary">向下移动</button>
+                </div>
+                <label>垂直偏移：<span id="verticalOffset"></span></label>
+            </h2>
+            <div>
+                <div class="input-group"  style="width: 250px">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">改变进度</span>
+                    </div>
+                    <input type="text" class="form-control" id="progress">
+                </div>
+                <button id="stepIn" class="btn btn-primary">+</button>
+                <button id="stepOut" class="btn btn-primary">-</button>
+
+                当前进度： <b id="progressInfo"></b>
+                <button id="render" class="btn btn-primary" disabled>渲染一次</button>
+                <button id="highlight" class="btn btn-primary">高亮一条</button>
+            </div>
+            <div>
+                放大缩小
+                <button id="zoomIn" class="btn btn-primary">+</button>
+                <button id="zoomOut" class="btn btn-primary">-</button>
+            </div>
+            <div>
+                动画:
+            </div>
+            <svg id="canvas" width="800" height="500">
+                <!--<defs>-->
+                    <!--<marker id="arrow"-->
+                            <!--markerUnits="strokeWidth"-->
+                            <!--markerWidth="12"-->
+                            <!--markerHeight="12"-->
+                            <!--viewBox="0 0 12 12"-->
+                            <!--refX="6"-->
+                            <!--refY="6"-->
+                            <!--orient="auto">-->
+                        <!--<path d="M2,2 L2,11 L10,6 L2,2" style="fill: red;" />-->
+                    <!--</marker>-->
+                <!--</defs>-->
+            </svg>
+        </div>
+        <div class="col-md-4">
+            <h4>完成清单</h4>
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action">线条可控高度粒度内新增线条时之前线条位置动画改变</a>
+                <a href="#" class="list-group-item list-group-item-action">拖动调整垂直位置</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">鼠标悬停后渲染挡住先渲染问题</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">清空操作</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">加入时间维度</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">点击按钮控制向上或向下位移</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">新增线条自动滚动到呈现位置</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">向右的箭头放置在合适位置并旋转放置正常</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">新增线条加入动画效果</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">新增线条自动滚动加入动画效果</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">线条箭头功能完善</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

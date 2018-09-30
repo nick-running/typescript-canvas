@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>index</title>
+    <style>
+        .tool-bar{
+            zoom: 1;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .tool-bar>.tool-item:first-child{
+            margin-left: 0;
+        }
+        .tool-bar>.tool-item{
+            padding: 2px 5px;
+            float: left;
+            border: 1px solid cornflowerblue;
+            margin-left: -1px;
+        }
+
+        .container{
+            padding-left: 210px;
+        }
+        .side-bar{
+            padding: 10px;
+            width: 190px;
+            height: 100%;
+            left: 0;
+            position: absolute;
+            border: 1px solid #adadad;
+        }
+        .node-box>.node-item:first-child{
+            margin-left: 0;
+        }
+        .node-box>.node-item{
+            float: left;
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+            padding: 5px;
+        }
+        .node-item:hover{
+            background-color: #e8e8e8;
+        }
+        .node-item>img{
+            width: inherit;
+            height: inherit;
+        }
+        canvas{
+            border: 1px solid #adadad;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div class="tool-bar" style="margin-left: 200px">
+        <div class="tool-item">choose</div>
+        <div class="tool-item">zoom in</div>
+        <div class="tool-item">zoom out</div>
+        <div class="tool-item">line</div>
+    </div>
+    <div class="container">
+        <div class="side-bar">
+            <h4>默认形状</h4>
+            <div class="node-box">
+                <div class="node-item" data-type="server">
+                    <img src="./static/images/server.png" alt="server">
+                </div>
+                <div class="node-item" data-type="computer">
+                    <img src="./static/images/computer.png" alt="computer">
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <canvas id="canvas"></canvas>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

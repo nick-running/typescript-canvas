@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!--<link rel="stylesheet" href="./static/lib/bootstrap/css/bootstrap.css">-->
+    <title>时间轴数据</title>
+    <style>
+        #canvas{
+            border: 1px solid lightgrey;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>
+                放大倍数:
+                <span id="times"></span>
+                <button id="showAll" class="btn btn-primary">全部展示</button>
+                <button id="addOne" class="btn btn-primary">添加一条</button>
+                <button id="showOne" class="btn btn-primary">展示一条</button>
+                <button id="showBatch" class="btn btn-primary">展示一堆</button>
+                <button id="play" class="btn btn-primary">播放</button>
+                <button id="pause" class="btn btn-primary">暂停</button>
+                <button id="clearAll" class="btn btn-primary">清空</button>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button id="moveUp" type="button" class="btn btn-secondary">向上移</button>
+                    <button id="moveDown" type="button" class="btn btn-secondary">向下移动</button>
+                </div>
+                <label>垂直偏移：<span id="verticalOffset"></span></label>
+            </h2>
+            <div>
+                <div class="input-group"  style="width: 150px">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">改变进度</span>
+                    </div>
+                    <input type="text" class="form-control" id="progress" maxlength="4">
+                </div>
+                当前进度： <b id="progressInfo"></b>
+                <button id="render" class="btn btn-primary">渲染一次</button>
+            </div>
+            <div>
+                动画:
+            </div>
+            <canvas id="canvas"></canvas>
+        </div>
+        <div class="col-md-4">
+            <h4>完成清单</h4>
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action">线条可控高度粒度内新增线条时之前线条位置动画改变</a>
+                <a href="#" class="list-group-item list-group-item-action">拖动调整垂直位置</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">鼠标悬停后渲染挡住先渲染问题</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">清空操作</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">加入时间维度</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">点击按钮控制向上或向下位移</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">新增线条自动滚动到呈现位置</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">向右的箭头放置在合适位置并旋转放置正常</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">新增线条加入动画效果</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">新增线条自动滚动加入动画效果</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-success">线条箭头功能完善</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

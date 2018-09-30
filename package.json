@@ -1,0 +1,42 @@
+{
+  "name": "typescript-canvas",
+  "version": "1.0.0",
+  "description": "typescript for canvas boilerplate",
+  "main": "main.js",
+  "scripts": {
+    "dev": "webpack-dev-server --open --mode development",
+    "build": "webpack --mode development --config webpack.config.js",
+    "start": "webpack-dev-server --open"
+  },
+  "keywords": [
+    "typescript",
+    "canvas"
+  ],
+  "author": "nick-running",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/d3": "^5.0.0",
+    "@types/lodash": "^4.14.110",
+    "clean-webpack-plugin": "^0.1.19",
+    "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.1.0",
+    "style-loader": "^0.20.3",
+    "ts-loader": "^4.1.0",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
+    "typescript": "^2.9.1",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^2.0.13",
+    "webpack-dev-server": "^3.1.1"
+  },
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "d3": "^5.5.0",
+    "d3-zoom": "^1.7.1",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.2"
+  }
+}
