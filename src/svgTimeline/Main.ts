@@ -1,5 +1,6 @@
 import Timeline from "./Timeline";
 import {AnimateAction} from "../timeline/AnimateAction";
+import '../static/lib/bootstrap/css/bootstrap.css'
 import {sample, sortBy, min, max} from 'lodash'
 let preData = [
     {id: 1, "direction": 1, "firstDate": 1528440550500, "secondDate": 1528440551777}, // e 1528440550293

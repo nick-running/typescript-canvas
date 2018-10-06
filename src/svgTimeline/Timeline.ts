@@ -75,18 +75,18 @@ export default class Timeline{
         this.init()
     }
     private init(){
-        this.svg = d3.select('#canvas')
-        this.canvas = d3.select('#canvas').append('defs').append('g').attr('id', 'timeline')
-        this.canvasWidth = parseInt(this.svg.attr('width'))
-        this.canvasHeight = parseInt(this.svg.attr('height'))
+        // this.svg = d3.select('#canvas')
+        // this.canvas = d3.select('#canvas').append('defs').append('g').attr('id', 'timeline')
+        // this.canvasWidth = parseInt(this.svg.attr('width'))
+        // this.canvasHeight = parseInt(this.svg.attr('height'))
 
-        this.svg.append('use').attr('xlink:href', '#timeline')
-            .attr('y', 500)
-            .attr('id', 'useTimeline')
+        // this.svg.append('use').attr('xlink:href', '#timeline')
+        //     .attr('y', 500)
+        //     .attr('id', 'useTimeline')
 
-        // this.canvas = d3.select('#canvas')
-        // this.canvasWidth = this.canvas.attr('width')
-        // this.canvasHeight = this.canvas.attr('height')
+        this.canvas = d3.select('#canvas')
+        this.canvasWidth = this.canvas.attr('width')
+        this.canvasHeight = this.canvas.attr('height')
         this.setAutoPosition()
         this.scale = d3.scaleLinear().domain([0,10]).range([0,10])
         this.newScale = this.scale
@@ -504,31 +504,32 @@ export default class Timeline{
         // console.log(`_this.newScale(_this.height) is: ${JSON.stringify(_this.newScale(_this.height))}`)
         const playTimeRatio = _this.diffTime/_this.newScale(_this.height)*_this.coefficient // todo 好像有bug
         // console.log(`playTimeRatio is: ${JSON.stringify(playTimeRatio)}`)
-
+        let totalTime = _this.diffTime*_this.coefficient
+        console.log(`totalTime is ${totalTime}`)
         // arrow.transition().duration(2000).call(_this.yZoom.translateTo, 0, _this.newScale(_this.height))
-        arrow.transition() // 开始动画
-            .ease(d3.easeLinear)
-            .duration((n,i)=>{
-                let item = this.actions[i]
-                return (_this.newScale(item.singleArrow.y2)-_this.newScale(item.singleArrow.y1))*playTimeRatio
-            })
-            .delay((d,i)=>{
-                let item = this.actions[i]
-                // console.log(`(_this.newScale(item.singleArrow.y1) - progressH) * playTimeRatio is: ${JSON.stringify((_this.newScale(item.singleArrow.y1) - progressH) * playTimeRatio)}`)
-                let time = (_this.newScale(item.singleArrow.y1) - progressH) * playTimeRatio
-                const fTime = time<0?0:time
-                // console.log(`fTime is: ${JSON.stringify(fTime)}`)
-                return fTime
-            })
-            .attr('x2', (n,i)=>{
-                return n.singleArrow.x2
-            })
-            .attr('y1', (n,i)=>{
-                return _this.newScale(n.singleArrow.y1)
-            })
-            .attr('y2', (n,i)=>{
-                return _this.newScale(n.singleArrow.y2)
-            })
+        // arrow.transition() // 开始动画
+        //     .ease(d3.easeLinear)
+        //     .duration((n,i)=>{
+        //         let item = this.actions[i]
+        //         return (_this.newScale(item.singleArrow.y2)-_this.newScale(item.singleArrow.y1))*playTimeRatio
+        //     })
+        //     .delay((d,i)=>{
+        //         let item = this.actions[i]
+        //         // console.log(`(_this.newScale(item.singleArrow.y1) - progressH) * playTimeRatio is: ${JSON.stringify((_this.newScale(item.singleArrow.y1) - progressH) * playTimeRatio)}`)
+        //         let time = (_this.newScale(item.singleArrow.y1) - progressH) * playTimeRatio
+        //         const fTime = time<0?0:time
+        //         // console.log(`fTime is: ${JSON.stringify(fTime)}`)
+        //         return fTime
+        //     })
+        //     .attr('x2', (n,i)=>{
+        //         return n.singleArrow.x2
+        //     })
+            // .attr('y1', (n,i)=>{
+            //     return _this.newScale(n.singleArrow.y1)
+            // })
+            // .attr('y2', (n,i)=>{
+            //     return _this.newScale(n.singleArrow.y2)
+            // })
             // .attr('marker-end', (n,i)=>{
             //     if(n.active) return 'url(#arrowActive)'
             //     if(ifBeforeProgress(i)){
@@ -549,6 +550,56 @@ export default class Timeline{
             //         }
             //     }
             // })
+        totalTime = 3000
+        arrow.transition() // 垂直动画
+            .ease(d3.easeLinear)
+            .duration(totalTime)
+            .attr('x2', (n,i)=>{
+                if(ifBeforeProgress(i)){
+                    return n.singleArrow.x2
+                }else{
+                    return n.singleArrow.x1
+                }
+                // return n.singleArrow.x2
+            })
+            .attr('y1', (n,i)=>{
+                return _this.newScale(n.singleArrow.y1)+200
+            })
+            .attr('y2', (n,i)=>{
+                return _this.newScale(n.singleArrow.y2)+200
+            })
+
+        arrow.filter(function(d, i) { return i==7 })
+            .transition()
+            .ease(d3.easeLinear)
+            // .delay(2000)
+            .duration(750)
+                .attr('x2', (n,i)=>{
+                    return n.singleArrow.x2
+                })
+            .attr('y1', (n,i)=>{
+                return _this.newScale(n.singleArrow.y1)+50
+            })
+            .attr('y2', (n,i)=>{
+                return _this.newScale(n.singleArrow.y2)+50
+            })
+        arrow.filter(function(d, i) { return i==7 })
+            .transition()
+            .delay(750)
+            .ease(d3.easeLinear)
+            // .delay(2000)
+            .duration(totalTime-750)
+                .attr('x2', (n,i)=>{
+                    return n.singleArrow.x2
+                })
+            .attr('y1', (n,i)=>{
+                return _this.newScale(n.singleArrow.y1)+150
+            })
+            .attr('y2', (n,i)=>{
+                return _this.newScale(n.singleArrow.y2)+150
+            })
+
+
             .on("end", function repeat(data) {
                 // _this.playAction = 'pause'
                 const tl = _this.canvas.select('.tl')
@@ -577,6 +628,7 @@ export default class Timeline{
                 console.log(`interrupt _this.progress is: ${JSON.stringify(_this.progress)}`)
                 console.log(`\r\n`)
             })
+
         this.canvas.selectAll('.guides')
             .attr('opacity', 0)
             .transition() // 开始动画
@@ -650,7 +702,7 @@ export default class Timeline{
     setOption(config){
         if(config.backgroundColor) {
             this.backgroundColor = config.backgroundColor
-            this.svg.style('background-color', this.backgroundColor)
+            this.canvas.style('background-color', this.backgroundColor)
         }
     }
     setCoefficient(coefficient: number){
