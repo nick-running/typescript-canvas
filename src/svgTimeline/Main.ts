@@ -3,107 +3,107 @@ import {AnimateAction} from "../timeline/AnimateAction";
 import '../static/lib/bootstrap/css/bootstrap.css'
 import {sample, sortBy, min, max} from 'lodash'
 let preData = [
-    {id: 1, "direction": 1, "firstDate": 1528440550500, "secondDate": 1528440551777}, // e 1528440550293
-    {id: 2, "direction": 2, "firstDate": 1528440550933, "secondDate": 1528440551777},
-    {id: 3, "direction": 2, "firstDate": 1528440550000, "secondDate": 1528440553049}, // s 1528440552494
-    {id: 4, "direction": 2, "firstDate": 1528440553882, "secondDate": 1528440554381},
-    {id: 5, "direction": 2, "firstDate": 1528440554381, "secondDate": 1528440556002}, // s 1528440555200
-    {id: 6, "direction": 1, "firstDate": 1528440556826, "secondDate": 1528440557272},
-    {id: 7, "direction": 1, "firstDate": 1528440558114, "secondDate": 1528440558718},
-    {id: 8, "direction": 2, "firstDate": 1528440559331, "secondDate": 1528440560160},
-    {id: 9, "direction": 2, "firstDate": 1528440560826, "secondDate": 1528440560885},
-    {id: 10, "direction": 2, "firstDate": 1528440561025, "secondDate": 1528440561342},
-    {id: 11, "direction": 1, "firstDate": 1528440562321, "secondDate": 1528440562707},
-    {id: 12, "direction": 2, "firstDate": 1528440563286, "secondDate": 1528440564133},
-    {id: 13, "direction": 2, "firstDate": 1528440565075, "secondDate": 1528440565769},
-    {id: 14, "direction": 2, "firstDate": 1528440573424, "secondDate": 1528440574233}, // 最后的时间数据
-    {id: 15, "direction": 2, "firstDate": 1528440566718, "secondDate": 1528440567444},
-    {id: 16, "direction": 2, "firstDate": 1528440568121, "secondDate": 1528440568914},
-    {id: 17, "direction": 1, "firstDate": 1528440569200, "secondDate": 1528440569338},
-    {id: 18, "direction": 1, "firstDate": 1528440569924, "secondDate": 1528440570431},
-    {id: 19, "direction": 2, "firstDate": 1528440570969, "secondDate": 1528440571860},
-    {id: 20, "direction": 2, "firstDate": 1528440572163, "secondDate": 1528440572511}
+    // {id: 1, "direction": 1, "firstDate": 1528440550500, "secondDate": 1528440551777}, // e 1528440550293
+    // {id: 2, "direction": 2, "firstDate": 1528440550933, "secondDate": 1528440551777},
+    // {id: 3, "direction": 2, "firstDate": 1528440550000, "secondDate": 1528440553049}, // s 1528440552494
+    // {id: 4, "direction": 2, "firstDate": 1528440553882, "secondDate": 1528440554381},
+    // {id: 5, "direction": 2, "firstDate": 1528440554381, "secondDate": 1528440556002}, // s 1528440555200
+    // {id: 6, "direction": 1, "firstDate": 1528440556826, "secondDate": 1528440557272},
+    // {id: 7, "direction": 1, "firstDate": 1528440558114, "secondDate": 1528440558718},
+    // {id: 8, "direction": 2, "firstDate": 1528440559331, "secondDate": 1528440560160},
+    // {id: 9, "direction": 2, "firstDate": 1528440560826, "secondDate": 1528440560885},
+    // {id: 10, "direction": 2, "firstDate": 1528440561025, "secondDate": 1528440561342},
+    // {id: 11, "direction": 1, "firstDate": 1528440562321, "secondDate": 1528440562707},
+    // {id: 12, "direction": 2, "firstDate": 1528440563286, "secondDate": 1528440564133},
+    // {id: 13, "direction": 2, "firstDate": 1528440565075, "secondDate": 1528440565769},
+    // {id: 14, "direction": 2, "firstDate": 1528440573424, "secondDate": 1528440574233}, // 最后的时间数据
+    // {id: 15, "direction": 2, "firstDate": 1528440566718, "secondDate": 1528440567444},
+    // {id: 16, "direction": 2, "firstDate": 1528440568121, "secondDate": 1528440568914},
+    // {id: 17, "direction": 1, "firstDate": 1528440569200, "secondDate": 1528440569338},
+    // {id: 18, "direction": 1, "firstDate": 1528440569924, "secondDate": 1528440570431},
+    // {id: 19, "direction": 2, "firstDate": 1528440570969, "secondDate": 1528440571860},
+    // {id: 20, "direction": 2, "firstDate": 1528440572163, "secondDate": 1528440572511}
 ]
-// preData = [
-//     {
-//         "id": 1,
-//         "direction": 1,
-//         "firstDate": 0,
-//         "secondDate": 567
-//     },
-//     {
-//         "id": 2,
-//         "direction": 2,
-//         "firstDate": 127,
-//         "secondDate": 568
-//     },
-//     {
-//         "id": 3,
-//         "direction": 1,
-//         "firstDate": 249,
-//         "secondDate": 568
-//     },
-//     {
-//         "id": 4,
-//         "direction": 1,
-//         "firstDate": 455,
-//         "secondDate": 572
-//     },
-//     {
-//         "id": 5,
-//         "direction": 2,
-//         "firstDate": 541,
-//         "secondDate": 838
-//     },
-//     {
-//         "id": 6,
-//         "direction": 2,
-//         "firstDate": 913,
-//         "secondDate": 1060
-//     },
-//     {
-//         "id": 7,
-//         "direction": 2,
-//         "firstDate": 1160,
-//         "secondDate": 1729
-//     },
-//     {
-//         "id": 8,
-//         "direction": 1,
-//         "firstDate": 1346,
-//         "secondDate": 1741
-//     },
-//     {
-//         "id": 9,
-//         "direction": 2,
-//         "firstDate": 1414,
-//         "secondDate": 1742
-//     },
-//     {
-//         "id": 10,
-//         "direction": 2,
-//         "firstDate": 1842,
-//         "secondDate": 2399
-//     },
-//     {
-//         "id": 11,
-//         "direction": 1,
-//         "firstDate": 1972,
-//         "secondDate": 2400
-//     },
-//     {
-//         "id": 12,
-//         "direction": 1,
-//         "firstDate": 2131,
-//         "secondDate": 2401
-//     },
-//     {
-//         "id": 13,
-//         "direction": 2,
-//         "firstDate": 2196,
-//         "secondDate": 2402
-//     }
-// ]
+preData = [
+    // {
+    //     "id": 1,
+    //     "direction": 1,
+    //     "firstDate": 0,
+    //     "secondDate": 567
+    // },
+    {
+        "id": 2,
+        "direction": 2,
+        "firstDate": 127,
+        "secondDate": 568
+    },
+    // {
+    //     "id": 3,
+    //     "direction": 1,
+    //     "firstDate": 249,
+    //     "secondDate": 568
+    // },
+    // {
+    //     "id": 4,
+    //     "direction": 1,
+    //     "firstDate": 455,
+    //     "secondDate": 572
+    // },
+    // {
+    //     "id": 5,
+    //     "direction": 2,
+    //     "firstDate": 541,
+    //     "secondDate": 838
+    // },
+    {
+        "id": 6,
+        "direction": 2,
+        "firstDate": 913,
+        "secondDate": 1060
+    },
+    {
+        "id": 7,
+        "direction": 2,
+        "firstDate": 1160,
+        "secondDate": 1729
+    },
+    // {
+    //     "id": 8,
+    //     "direction": 1,
+    //     "firstDate": 1346,
+    //     "secondDate": 1741
+    // },
+    // {
+    //     "id": 9,
+    //     "direction": 2,
+    //     "firstDate": 1414,
+    //     "secondDate": 1742
+    // },
+    // {
+    //     "id": 10,
+    //     "direction": 2,
+    //     "firstDate": 1842,
+    //     "secondDate": 2399
+    // },
+    // {
+    //     "id": 11,
+    //     "direction": 1,
+    //     "firstDate": 1972,
+    //     "secondDate": 2400
+    // },
+    // {
+    //     "id": 12,
+    //     "direction": 1,
+    //     "firstDate": 2131,
+    //     "secondDate": 2401
+    // },
+    // {
+    //     "id": 13,
+    //     "direction": 2,
+    //     "firstDate": 2196,
+    //     "secondDate": 2402
+    // }
+]
 // 同步时间
 let syncTime = function(arr, triggerIdx, time){
     arr.forEach((n,i)=>{
