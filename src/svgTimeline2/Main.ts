@@ -1,7 +1,11 @@
-import Timeline from "./Timeline";
-import {AnimateAction} from "../timeline/AnimateAction";
+import Timeline from "./Timeline2";
 import '../static/lib/bootstrap/css/bootstrap.css'
-import {sample, sortBy, min, max} from 'lodash'
+import * as d3 from "d3";
+
+import {sample, sortBy, min, max, pull} from 'lodash'
+import {AnimateAction} from "../timeline/AnimateAction";
+import {Emitter} from "./Timeline2";
+// import {Emitter} from "./Emitter";
 let preData = [
     {id: 1, "direction": 1, "firstDate": 1528440550500, "secondDate": 1528440551777}, // e 1528440550293
     {id: 2, "direction": 2, "firstDate": 1528440550933, "secondDate": 1528440551777},
@@ -9,10 +13,10 @@ let preData = [
     {id: 4, "direction": 2, "firstDate": 1528440553882, "secondDate": 1528440554381},
     {id: 5, "direction": 2, "firstDate": 1528440554381, "secondDate": 1528440556002}, // s 1528440555200
     {id: 6, "direction": 1, "firstDate": 1528440556826, "secondDate": 1528440557272},
-    {id: 7, "direction": 1, "firstDate": 1528440558114, "secondDate": 1528440558718},
-    {id: 8, "direction": 2, "firstDate": 1528440559331, "secondDate": 1528440560160},
+    // {id: 7, "direction": 1, "firstDate": 1528440558114, "secondDate": 1528440558718},
+    // {id: 8, "direction": 2, "firstDate": 1528440559331, "secondDate": 1528440560160},
     // {id: 9, "direction": 2, "firstDate": 1528440560826, "secondDate": 1528440560885},
-    // {id: 10, "direction": 2, "firstDate": 1528440561025, "secondDate": 1528440561342},
+    {id: 10, "direction": 2, "firstDate": 1528440561025, "secondDate": 1528440561342},
     // {id: 11, "direction": 1, "firstDate": 1528440562321, "secondDate": 1528440562707},
     // {id: 12, "direction": 2, "firstDate": 1528440563286, "secondDate": 1528440564133},
     // {id: 13, "direction": 2, "firstDate": 1528440565075, "secondDate": 1528440565769},
@@ -26,79 +30,88 @@ let preData = [
 ]
 let preData2 = [
     {
-        "id": 1,
+        "id": 100,
         "direction": 1,
         "firstDate": 0,
-        "secondDate": 567
+        "secondDate": 567,
+	      "text": "BZ9L"
     },
     {
-        "id": 2,
+        "id": 101,
         "direction": 2,
         "firstDate": 127,
-        "secondDate": 568
+        "secondDate": 568,
+	      "text": "FW2QM9E"
     },
     {
-        "id": 3,
+        "id": 102,
         "direction": 1,
         "firstDate": 249,
-        "secondDate": 568
+        "secondDate": 568,
+	      "text": "NAC"
     },
     {
-        "id": 4,
+        "id": 103,
         "direction": 1,
         "firstDate": 455,
-        "secondDate": 572
+        "secondDate": 572,
+	      "text": "HFYJO"
     },
     {
-        "id": 5,
+        "id": 104,
         "direction": 2,
         "firstDate": 541,
-        "secondDate": 838
+        "secondDate": 838,
+	      "text": "OEBS"
     },
     {
-        "id": 6,
+        "id": 105,
         "direction": 2,
         "firstDate": 913,
-        "secondDate": 1060
+        "secondDate": 1060,
+	      "text": "UEDEQ4WC"
     },
     {
-        "id": 7,
+        "id": 106,
         "direction": 2,
         "firstDate": 1160,
-        "secondDate": 1729
+        "secondDate": 1729,
+	      "text": "BNSI"
+    },
+    {
+        "id": 107,
+        "direction": 1,
+        "firstDate": 1346,
+        "secondDate": 1741,
+	      "text": "PJ20OF"
+    },
+    {
+        "id": 108,
+        "direction": 2,
+        "firstDate": 1414,
+        "secondDate": 1742,
+	      "text": "IAB5"
     },
     // {
-    //     "id": 8,
-    //     "direction": 1,
-    //     "firstDate": 1346,
-    //     "secondDate": 1741
-    // },
-    // {
-    //     "id": 9,
-    //     "direction": 2,
-    //     "firstDate": 1414,
-    //     "secondDate": 1742
-    // },
-    // {
-    //     "id": 10,
+    //     "id": 109,
     //     "direction": 2,
     //     "firstDate": 1842,
     //     "secondDate": 2399
     // },
     // {
-    //     "id": 11,
+    //     "id": 110,
     //     "direction": 1,
     //     "firstDate": 1972,
     //     "secondDate": 2400
     // },
     // {
-    //     "id": 12,
+    //     "id": 111,
     //     "direction": 1,
     //     "firstDate": 2131,
     //     "secondDate": 2401
     // },
     // {
-    //     "id": 13,
+    //     "id": 112,
     //     "direction": 2,
     //     "firstDate": 2196,
     //     "secondDate": 2402
@@ -114,13 +127,10 @@ let syncTime = function(arr, triggerIdx, time){
     })
     return arr
 }
-preData = sortBy(preData, n=>n.firstDate)
-
 let firstDateList = preData.map(n=>n.firstDate)
 let secondDateList = preData.map(n=>n.secondDate)
 let allDate = firstDateList.concat(secondDateList)
 let tempMin = min(allDate)
-let tempMax = max(allDate)
 let nData = syncTime(preData, 0, tempMin)
 for(let i=0;i<nData.length;i++){
     let curRow = nData[i]
@@ -136,77 +146,78 @@ for(let i=0;i<nData.length;i++){
         }
     }
 }
-// console.log(`preData is: ${JSON.stringify(preData)}`)
-console.log(`nData is: ${JSON.stringify(nData)}`)
 
-let tl = new Timeline(20, 200, 300, '#63583F', 4, false)
-tl.setOption({backgroundColor: '#2F3243'})
-tl.setData(nData)
-// tl.setCoefficient(100000)
-tl.setCoefficient(1)
+let tl = new Timeline('#canvas',
+    'auto', 200, 300, '#63583F', 4,
+    false)
+tl.setOption({
+	backgroundColor: '#2F3243',
+	info: {source: '服务器1.1.1.1', target: '客户端2.2.2.2'}
+})
+tl.setCoefficient(20)
+tl.setProgress(100)
+tl.setData([])
 tl.render()
-// tl.setPlayAction(AnimateAction.pause)
-// tl.setProgress(20, 'percent')
 
+Emitter.register('interruptProgress', function (evName, args1, args2) {
+    console.log('interruptProgress')
+    // console.log('123412....')
+    // console.log(`args1 is: ${JSON.stringify(args1)}`)
+    // console.log(`args2 is: ${JSON.stringify(args2)}`)
+}, this)
+let highlightRowText = document.getElementById('highlightRow')
+// highlightRowText.innerText = '2'
+let highlightList = []
+Emitter.register('highlightStart', function (evName, args1, args2) {
+    highlightList.push(args1)
+    highlightRowText.innerText = highlightList.join(',')
+    console.log('on highlightStart...', args1)
+}, this)
+Emitter.register('highlightEnd', function (evName, args1, args2) {
+    pull(highlightList, args1)
+    highlightRowText.innerText = highlightList.join(',')
+    console.log('on highlightEnd...', args1)
+}, this)
+
+
+let playBtn = document.getElementById('play')
+playBtn.addEventListener('click', ()=>{
+    tl.setPlayAction('play')
+})
+let pauseBtn = document.getElementById('pause')
+pauseBtn.addEventListener('click', ()=>{
+    tl.setPlayAction('pause')
+})
 
 let progressEditor = document.getElementById('progress') as HTMLInputElement
 progressEditor.addEventListener('change', (ev)=>{
-    // tl.setProgress(progressEditor.value, 'percent')
-    playAction = AnimateAction.pause
-    tl.setPlayAction(playAction)
-    tl.setNewProgress(progressEditor.value)
+    tl.setProgress(progressEditor.value)
+    tl.render()
 })
-
 let stepInBtn = document.getElementById('stepIn')
 stepInBtn.addEventListener('click', ()=>{
     let num = parseInt(progressEditor.value)+1
     progressEditor.value = num+''
-    console.log(`value is: ${JSON.stringify(num)}`)
-    tl.setNewProgress(num)
+    tl.setProgress(num)
+    tl.render()
 })
 
 let stepOutBtn = document.getElementById('stepOut')
 stepOutBtn.addEventListener('click', ()=>{
     let num = parseInt(progressEditor.value)-1
     progressEditor.value = num+''
-    console.log(`value is: ${JSON.stringify(num)}`)
-    tl.setNewProgress(num)
-})
-let zoom = 0
-let zoomInBtn = document.getElementById('zoomIn')
-zoomInBtn.addEventListener('click', ()=>{
-    zoom+=0.1
-    tl.setZoomInOut(zoom)
+    tl.setProgress(num)
+    tl.render()
 })
 
-let zoomOutBtn = document.getElementById('zoomOut')
-zoomOutBtn.addEventListener('click', ()=>{
-    zoom-=0.1
-    tl.setZoomInOut(zoom)
-})
-
-let playAction = AnimateAction.pause
-let playBtn = document.getElementById('play')
-playBtn.addEventListener('click', ()=>{
-    playAction = AnimateAction.play
-    tl.setPlayAction(playAction)
-})
-let pauseBtn = document.getElementById('pause')
-pauseBtn.addEventListener('click', ()=>{
-    playAction = AnimateAction.pause
-    tl.setPlayAction(playAction)
-})
 let moveUpBtn = document.getElementById('moveUp')
 moveUpBtn.addEventListener('click', ()=>{
     tl.startMove()
 })
 let switchDataBtn = document.getElementById('switchData')
+let toggle = true
 switchDataBtn.addEventListener('click', ()=>{
-    tl.updateData(preData2)
-})
-let highlightBtn = document.getElementById('highlight')
-highlightBtn.addEventListener('click', ()=>{
-    // playAction = AnimateAction.pause
-    // tl.setPlayAction(playAction)
-    tl.setHighlight(sample(preData).id)
+    tl.setData(toggle?preData2:preData)
+    tl.render()
+    toggle = !toggle
 })

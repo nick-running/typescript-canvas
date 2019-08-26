@@ -8,8 +8,10 @@ module.exports = {
     // main: './src/Main.ts',
     // 'timeline-packet': './src/packageTimeline.ts',
     // 'svgMain': './src/d3Zoom/d3Zoom.ts',
-    'svgMain': './src/svgTimeline/Main.ts',
+    // 'svgMain': './src/svgTimeline/Main.ts',
     // 'Timeline': './src/svgTimeline/Timeline.ts',
+    'svgMain': './src/svgTimeline2/Main.ts',
+    // 'Timeline': './src/svgTimeline2/Timeline2.ts',
     // 'timeline-packet': './src/packageTimeline.ts',
     // 'timeline-packet': './src/timeline/index.ts',
     // 'timeline-packet': './src/timeline/TimelinePacket',
@@ -18,7 +20,7 @@ module.exports = {
   },
   // devtool: 'inline-source-map',
   devServer: {
-    host: '192.168.0.109',
+    // host: '192.168.0.109',
     port: 8383,
     contentBase: './dist'
   },

@@ -17,22 +17,22 @@
             border: 1px solid lightgrey;
         }
         circle,line{
-            transition: all ease-in .1s;
+            transition: opacity ease-in .1s;
         }
-        .t-start-guides-g:hover .t-start-guides-c,
-        .t-start-guides-g:hover .t-end-guides-c{
+        .t-line-g:hover .t-start-guides-c,
+        .t-line-g:hover .t-end-guides-c{
             fill: #04A7F1;
         }
-        .t-start-guides-g:hover .t-start-guides-o-c,
-        .t-start-guides-g:hover .t-end-guides-o-c,
-        .t-start-guides-g:hover .t-start-guides-l,
-        .t-start-guides-g:hover .t-end-guides-l{
+        .t-line-g:hover .t-start-guides-o-c,
+        .t-line-g:hover .t-end-guides-o-c,
+        .t-line-g:hover .t-start-guides-l,
+        .t-line-g:hover .t-end-guides-l{
             opacity: 1;
         }
         /*.t-arrow.active{*/
             /*stroke: #fff !important;*/
         /*}*/
-        .t-start-guides-g:hover .t-arrow{
+        .t-line-g:hover .t-arrow{
 
         }
         /*#tooltip{*/
@@ -48,13 +48,13 @@
             /*display: none;*/
             /*z-index: 10;*/
         /*}*/
-        /*.t-start-guides-g:hover .t-start-guides-o-c,*/
+        /*.t-line-g:hover .t-start-guides-o-c,*/
         /*.t-end-guides-g:hover .t-end-guides-o-c,*/
         /*.t-start-guides-o-c:hover,*/
         /*.t-end-guides-o-c:hover{*/
             /*opacity: 1;*/
         /*}*/
-        /*.t-start-guides-g:hover .t-start-guides-l,*/
+        /*.t-line-g:hover .t-start-guides-l,*/
         /*.t-end-guides-g:hover .t-end-guides-l{*/
             /*opacity: 1;*/
         /*}*/
@@ -87,6 +87,9 @@
                     </div>
                     <input type="text" class="form-control" id="progress">
                 </div>
+                <div>点亮id: <span id="highlightRow"></span></div>
+
+                <button id="switchData" class="btn btn-primary">切换数据</button>
                 <button id="stepIn" class="btn btn-primary">+</button>
                 <button id="stepOut" class="btn btn-primary">-</button>
 

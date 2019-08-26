@@ -162,8 +162,16 @@ export default class Timeline{
         // console.log(this.diffTime*this.playTimeRatio)
         // this.canvas.transition().duration(100).call(this.yZoom.transform, d3.zoomIdentity);
         // console.log(`this.newScale(100) is: ${JSON.stringify(this.newScale(100))}`)
-        this.canvas.transition()
-            .ease(d3.easeLinear).duration(100).call(this.yZoom.translateTo, 0, 250)
+
+        // this.canvas.transition()
+        // // this.canvas.selectAll('.t-arrow').transition()
+        //     .ease(d3.easeLinear).duration(750).call(this.yZoom.translateTo, 0, 10)
+        this.canvas.selectAll('.t-start-guides-g')
+            .transition()
+            .ease(d3.easeLinear)
+            .duration(3000)
+            .attr('transform', `translate(0, -200)`)
+
         // this.canvas.selectAll('.t-arrow').transition().duration(2000)
         //     .attr('y1', n=>{
         //         return n.singleArrow.y1+=200
@@ -463,15 +471,15 @@ export default class Timeline{
                 return retY
             })
             .attr('marker-end', n=>{
-                // if(progressH>_this.newScale(n.readyAnimate.y)&&progressH<_this.newScale(n.singleArrow.y2)){
-                //     if(n.active) return 'url(#arrowActive)'
-                //     return n.direction===Direction.A_TO_B?'url(#arrowSend)':'url(#arrowReceive)'
-                // }else if(progressH<_this.newScale(n.singleArrow.y2)){
+                if(progressH>_this.newScale(n.readyAnimate.y)&&progressH<_this.newScale(n.singleArrow.y2)){
+                    if(n.active) return 'url(#arrowActive)'
+                    return n.direction===Direction.A_TO_B?'url(#arrowSend)':'url(#arrowReceive)'
+                }else if(progressH<_this.newScale(n.singleArrow.y2)){
                     return 'none'
-                // }else if(progressH>=_this.newScale(n.singleArrow.y2)) {
-                //     if(n.active) return 'url(#arrowActive)'
-                //     return n.direction===Direction.A_TO_B?'url(#arrowSend)':'url(#arrowReceive)'
-                // }
+                }else if(progressH>=_this.newScale(n.singleArrow.y2)) {
+                    if(n.active) return 'url(#arrowActive)'
+                    return n.direction===Direction.A_TO_B?'url(#arrowSend)':'url(#arrowReceive)'
+                }
             })
         this.canvas.selectAll('.guides')
             .attr('opacity', (n,i)=>{
@@ -505,141 +513,114 @@ export default class Timeline{
         // const playTimeRatio = _this.newScale(_this.playTimeRatio)
         // console.log(`_this.height is: ${JSON.stringify(_this.height)}`)
         // console.log(`_this.newScale(_this.height) is: ${JSON.stringify(_this.newScale(_this.height))}`)
-        const playTimeRatio = _this.diffTime/_this.newScale(_this.height)*_this.coefficient // todo 好像有bug
-        // console.log(`playTimeRatio is: ${JSON.stringify(playTimeRatio)}`)
-        let totalTime = _this.diffTime*_this.coefficient
+
+        const tl = _this.canvas.select('.tl')
+        const ly1H = tl.attr('y1')
+        const ly2H = tl.attr('y2')
+        const lh = ly2H-ly1H
+        // console.log(`ly1H is: ${JSON.stringify(ly1H)}`)
+        // console.log(`lh is: ${JSON.stringify(ly1H)}`)
+        // console.log(`_this.height is: ${JSON.stringify(_this.height)}`)
+        // console.log(`_this.newScale(_this.height) is: ${JSON.stringify(_this.newScale(_this.height))}`)
+
+        const playTimeRatio = _this.diffTime/lh*_this.coefficient
+        console.log(`playTimeRatio is: ${JSON.stringify(playTimeRatio)}`)
+        // console.log(`_this.diffTime is: ${JSON.stringify(_this.diffTime)}`)
+        // let totalTime = _this.diffTime*_this.coefficient
         // console.log(`totalTime is ${totalTime}`)
         // arrow.transition().duration(2000).call(_this.yZoom.translateTo, 0, _this.newScale(_this.height))
 
-        // arrow.transition() // 开始动画
-        //     .ease(d3.easeLinear)
-        //     .duration((n,i)=>{
-        //         let item = this.actions[i]
-        //         return (_this.newScale(item.singleArrow.y2)-_this.newScale(item.singleArrow.y1))*playTimeRatio
-        //     })
-        //     .delay((d,i)=>{
-        //         let item = this.actions[i]
-        //         // console.log(`(_this.newScale(item.singleArrow.y1) - progressH) * playTimeRatio is: ${JSON.stringify((_this.newScale(item.singleArrow.y1) - progressH) * playTimeRatio)}`)
-        //         let time = (_this.newScale(item.singleArrow.y1) - progressH) * playTimeRatio
-        //         const fTime = time<0?0:time
-        //         // console.log(`fTime is: ${JSON.stringify(fTime)}`)
-        //         return fTime
-        //     })
-        //     .attr('x2', (n,i)=>{
-        //         return n.singleArrow.x2
-        //     })
-            // .attr('y1', (n,i)=>{
-            //     return _this.newScale(n.singleArrow.y1)
-            // })
-            // .attr('y2', (n,i)=>{
-            //     return _this.newScale(n.singleArrow.y2)
-            // })
-            // .attr('marker-end', (n,i)=>{
-            //     if(n.active) return 'url(#arrowActive)'
-            //     if(ifBeforeProgress(i)){
-            //         if(n.direction===Direction.A_TO_B) {
-            //             return 'url(#arrowSend)'
-            //         }else{
-            //             return 'url(#arrowReceive)'
-            //         }
-            //     }else{
-            //         if(playAction==='play') {
-            //             if(n.direction===Direction.A_TO_B) {
-            //                 return 'url(#arrowSend)'
-            //             }else{
-            //                 return 'url(#arrowReceive)'
-            //             }
-            //         }else{
-            //             return 'none'
-            //         }
-            //     }
-            // })
-        totalTime = 3000
-        arrow.transition() // 垂直动画
+        arrow.filter((n,i)=>{
+            return _this.newScale(_this.actions[i].singleArrow.y2)>=progressH
+        }).transition() // 开始动画
             .ease(d3.easeLinear)
-            .duration((n,i)=>{
-                let item = this.actions[i]
-                return (_this.newScale(item.singleArrow.y2)-_this.newScale(item.singleArrow.y1))*playTimeRatio
+            .duration((n,i, el)=>{
+                const y1 = _this.newScale(n.singleArrow.y1)
+                const y2 = _this.newScale(n.singleArrow.y2)
+                // console.log(`duration...`)
+                // console.log(`i is: ${JSON.stringify(i)}`)
+                // console.log(`y1 is: ${JSON.stringify(y1)}`)
+                // console.log(`y2 is: ${JSON.stringify(y2)}`)
+                // console.log(`progressH is: ${JSON.stringify(progressH)}`)
+                let d
+                if(progressH>=y1&&progressH<y2) { // 画线中间
+                    // console.log(`画线中间: ${i}`)
+                    d = ((y2-y1)-(progressH-y1))*playTimeRatio
+                }else{
+                    d = (y2-y1)*playTimeRatio
+                }
+                // console.log(`dua is: ${JSON.stringify(d)}`)
+                return d
             })
             .delay((d,i)=>{
-                let item = this.actions[i]
+                // let item = this.actions[i]
                 // console.log(`(_this.newScale(item.singleArrow.y1) - progressH) * playTimeRatio is: ${JSON.stringify((_this.newScale(item.singleArrow.y1) - progressH) * playTimeRatio)}`)
-                let time = (_this.newScale(item.singleArrow.y1) - progressH) * playTimeRatio
+                // console.log(`_this.newScale(item.singleArrow.y1) is: ${JSON.stringify(_this.newScale(item.singleArrow.y1))}`)
+                let time = (_this.newScale(d.singleArrow.y1) - progressH) * playTimeRatio
+                // console.log(`time is: ${JSON.stringify(time)}`)
                 const fTime = time<0?0:time
-                // console.log(`fTime is: ${JSON.stringify(fTime)}`)
+                // console.log(`delay is: ${JSON.stringify(fTime)}`)
                 return fTime
             })
             .attr('x2', (n,i)=>{
                 return n.singleArrow.x2
             })
-            // .attr('y1', (n,i)=>{
-            //     return _this.newScale(n.singleArrow.y1)+10
-            // })
+            .attr('y1', (n,i)=>{
+                return _this.newScale(n.singleArrow.y1)
+            })
             .attr('y2', (n,i)=>{
                 return _this.newScale(n.singleArrow.y2)
             })
-
-        // arrow.filter(function(d, i) { return i==7 })
-        //     .transition()
-        //     .ease(d3.easeLinear)
-        //     // .delay(2000)
-        //     .duration(750)
-        //         .attr('x2', (n,i)=>{
-        //             return n.singleArrow.x2
-        //         })
-        //     .attr('y1', (n,i)=>{
-        //         return _this.newScale(n.singleArrow.y1)+50
-        //     })
-        //     .attr('y2', (n,i)=>{
-        //         return _this.newScale(n.singleArrow.y2)+50
-        //     })
-        // arrow.filter(function(d, i) { return i==7 })
-        //     .transition()
-        //     .delay(750)
-        //     .ease(d3.easeLinear)
-        //     // .delay(2000)
-        //     .duration(totalTime-750)
-        //         .attr('x2', (n,i)=>{
-        //             return n.singleArrow.x2
-        //         })
-        //     .attr('y1', (n,i)=>{
-        //         return _this.newScale(n.singleArrow.y1)+150
-        //     })
-        //     .attr('y2', (n,i)=>{
-        //         return _this.newScale(n.singleArrow.y2)+150
-        //     })
-
+            .attr('marker-end', (n,i)=>{
+                if(n.active) return 'url(#arrowActive)'
+                if(ifBeforeProgress(i)){
+                    if(n.direction===Direction.A_TO_B) {
+                        return 'url(#arrowSend)'
+                    }else{
+                        return 'url(#arrowReceive)'
+                    }
+                }else{
+                    if(playAction==='play') {
+                        if(n.direction===Direction.A_TO_B) {
+                            return 'url(#arrowSend)'
+                        }else{
+                            return 'url(#arrowReceive)'
+                        }
+                    }else{
+                        return 'none'
+                    }
+                }
+            })
 
             .on("end", function repeat(data, i) {
-                console.log(`i is: ${JSON.stringify(i)}`)
+                // console.log(`i is: ${JSON.stringify(i)}`)
                 // _this.playAction = 'pause'
                 const tl = _this.canvas.select('.tl')
                 const y1H = tl.attr('y1')
                 const y2H = tl.attr('y2')
                 _this.progress = _this.newScale(data.singleArrow.y2)/(y2H-y1H)*100
 
+                // const scaleY2 = _this.newScale(data.singleArrow.y2)
 
-                const scaleY2 = _this.newScale(data.singleArrow.y2)
-
-                console.log(`data.id is: ${JSON.stringify(data.id)}`)
-                console.log(`scaleY2 is: ${JSON.stringify(scaleY2)}`)
-                console.log(`_this.curTransX is: ${JSON.stringify(_this.curTransY)}`)
-                console.log(`data.singleArrow.y2 is: ${JSON.stringify(data.singleArrow.y2)}`)
-                console.log(`diff is: ${JSON.stringify(Math.abs(scaleY2-_this.curTransY))}`)
+                // console.log(`data.id is: ${JSON.stringify(data.id)}`)
+                // console.log(`scaleY2 is: ${JSON.stringify(scaleY2)}`)
+                // console.log(`_this.curTransX is: ${JSON.stringify(_this.curTransY)}`)
+                // console.log(`data.singleArrow.y2 is: ${JSON.stringify(data.singleArrow.y2)}`)
+                // console.log(`diff is: ${JSON.stringify(Math.abs(scaleY2-_this.curTransY))}`)
 
                 // if(Math.abs(scaleY2-_this.curTransY)>250+100) {
-                if(_this.newScale(data.singleArrow.y2)>250+20&&i<_this.actions.length-1) {
-                    console.log(`set transY...`);
-                    _this.curTransY = _this.newScale(data.singleArrow.y2)
-
-                    _this.setPlayAction(2)
-                    _this.canvas.transition()
-                        .ease(d3.easeLinear).duration(100).call(_this.yZoom.translateTo, 0, _this.newScale(data.singleArrow.y2))
-                    setTimeout(function () {
-
-                    _this.setPlayAction(1)
-                    },100)
-                }
+                // if(_this.newScale(data.singleArrow.y2)>250+20&&i<_this.actions.length-1) {
+                //     console.log(`set transY...`);
+                //     _this.curTransY = _this.newScale(data.singleArrow.y2)
+                //
+                //     _this.setPlayAction(2)
+                //     _this.canvas.transition()
+                //         .ease(d3.easeLinear).duration(100).call(_this.yZoom.translateTo, 0, _this.newScale(data.singleArrow.y2))
+                //     setTimeout(function () {
+                //
+                //     _this.setPlayAction(1)
+                //     },100)
+                // }
 
             })
             .on("interrupt", function repeat(ev, ev2, ev3) {
@@ -665,16 +646,34 @@ export default class Timeline{
             })
 
         this.canvas.selectAll('.guides')
+            .filter((n,i)=>{
+                return _this.newScale(_this.actions[i].singleArrow.y2)>=progressH
+            })
             .attr('opacity', 0)
             .transition() // 开始动画
             .ease(d3.easeLinear)
             .duration((n,i)=>{
-                let item = this.actions[i]
-                return (_this.newScale(item.singleArrow.y2)-_this.newScale(item.singleArrow.y1))*this.playTimeRatio
+                // let item = this.actions[i]
+                // return (_this.newScale(item.singleArrow.y2)-_this.newScale(item.singleArrow.y1))*this.playTimeRatio
+                const y1 = _this.newScale(n.singleArrow.y1)
+                const y2 = _this.newScale(n.singleArrow.y2)
+                let d
+                if(progressH>=y1&&progressH<y2) { // 画线中间
+                    // console.log(`画线中间: ${i}`)
+                    d = ((y2-y1)-(progressH-y1))*playTimeRatio
+                }else{
+                    d = (y2-y1)*playTimeRatio
+                }
+                // console.log(`dua is: ${JSON.stringify(d)}`)
+                return d
             })
             .delay((d,i)=>{
-                let item = this.actions[i]
-                return (_this.newScale(item.singleArrow.y1)-progressH)*playTimeRatio
+                let time = (_this.newScale(d.singleArrow.y1) - progressH) * playTimeRatio
+                const fTime = time<0?0:time
+                // console.log(`delay is: ${JSON.stringify(fTime)}`)
+                return fTime
+                // let item = this.actions[i]
+                // return (_this.newScale(item.singleArrow.y1)-progressH)*playTimeRatio
             })
             .attr('opacity', (n,i)=>{
                 if(ifBeforeProgress(i)){
@@ -761,8 +760,24 @@ export default class Timeline{
             // console.log(`this.maxTime is: ${JSON.stringify(this.maxTime)}`)
         }
     }
+    updateData(data, minTime?: number, maxTime?: number){
+        this.data = data
+
+        if(minTime!==null&&minTime!==undefined) {
+            this.minTime = minTime
+            this.maxTime = maxTime
+        }else{
+            let firstDateList = data.map(n=>n.firstDate)
+            let secondDateList = data.map(n=>n.secondDate)
+            let allDate = firstDateList.concat(secondDateList)
+            // console.log(`allDate is: ${JSON.stringify(allDate)}`)
+            this.minTime = min(allDate)
+            this.maxTime = max(allDate)
+            // console.log(`this.minTime is: ${JSON.stringify(this.minTime)}`)
+            // console.log(`this.maxTime is: ${JSON.stringify(this.maxTime)}`)
+        }
+    }
     setHighlight(selectionId){
-        const _this = this
         if(selectionId) {
             console.log(`selectionId is: ${JSON.stringify(selectionId)}`)
             console.log(`this.actions is: ${JSON.stringify(this.actions)}`)
@@ -819,7 +834,7 @@ export default class Timeline{
         }
     }
 
-    processData(type){
+    processData(){
         // let granularity = 20
         // if(this.data.length<granularity) {
         if(this.minTime!==undefined&&this.minTime!==null) {
@@ -876,7 +891,8 @@ export default class Timeline{
         // this.playTimeRatio = (this.diffTime/1000/this.height)*3000
         this.playTimeRatio = this.diffTime/this.scale(this.height)*this.coefficient
         // console.log(`playTimeRatio is: ${JSON.stringify(this.playTimeRatio)}`)
-
+        this.actions = []
+        this.oActions = []
         this.timeLineData.forEach(n=>{
             this.addAction(n.id, n.direction, n.firstY, n.secondY)
         })
@@ -956,7 +972,7 @@ export default class Timeline{
 
     render(){
         const guidesOpacity = .8
-        this.processData('showBatch')
+        this.processData()
         // console.log(`this.actions is: ${JSON.stringify(this.actions)}`)
         // this.actions.forEach(n=> {
         //     n.readyAnimate.y = n.readyAnimate.y+this.y
@@ -968,7 +984,8 @@ export default class Timeline{
         //     n.endGuides.y2 = n.endGuides.y2+this.y
         // })
         this.yZoom = d3.zoom()
-            // .scaleExtent([1, 10])
+            .scaleExtent([1, 10])
+            // .translateExtent([[0,0], [areaWidth, areaHeight]])//移动的范围
             .on("zoom", zoomed);
 
         const _this = this
@@ -992,14 +1009,13 @@ export default class Timeline{
                     return Y(n.y1)
                 })
                 .attr('y2', n=>Y(n.y2))
-// console.log(`_this.newScale(1) is: ${JSON.stringify(_this.newScale(1))}`)
             // _this.actions.forEach((n,i)=>{
             //     n.singleArrow.y1 = Y(_this.oActions[i].singleArrow.y1)
             //     n.singleArrow.y2 = Y(_this.oActions[i].singleArrow.y2)
             // })
-            // _this.canvas.selectAll('.t-arrow, .guides').interrupt()
+            _this.canvas.selectAll('.t-arrow, .guides').interrupt()
             // _this.setProgress(_this.progress, _this.progressType)
-            // _this.playAction = 'pause'
+            _this.playAction = 'pause'
             _this.setNewProgress(_this.progress)
             // _this.canvas.selectAll('.t-arrow, .guides').interrupt()
             // _this.canvas.selectAll('.t-arrow')
@@ -1007,51 +1023,6 @@ export default class Timeline{
             //     .attr('y2', n=>this.newScale(n.singleArrow.y2))
             // _this.canvas.selectAll('.guides')
         }
-
-        // dimensions
-        var margin = {top: 0, bottom: 0},
-            svg_dy = 500,
-            chart_dy = svg_dy - margin.top - margin.bottom;
-
-
-        // let scale = d3.scaleLinear().domain([0,10]).range([0,11])
-
-        // data
-        var y = d3.randomNormal(400, 100);
-        var x_jitter = d3.randomUniform(0, 100);
-
-        var d = d3.range(750)
-            .map(function() {
-                return [x_jitter(), y()];
-            });
-
-        // console.log(`chart_dy is: ${JSON.stringify(chart_dy)}`)
-        // y position
-        var yScale = d3.scaleLinear()
-            .domain(d3.extent(d, function(d) { return d[1]; }))
-            .range([chart_dy, margin.top]);
-
-        // console.log(`d[1] is: ${JSON.stringify(d[1])}`)
-        // console.log(`yScale is: ${JSON.stringify(yScale(20))}`)
-        // function zoomed() {
-        //     // re-draw circles using new y-axis scale; ref [3]
-        //     // var new_yScale = d3.event.transform.rescaleY(yScale);
-        //     // d3.selectAll('.t-arrow').attr("y1", function(d) {
-        //     //     // console.log(`d[1] is: ${JSON.stringify(d[1])}`)
-        //     //     return new_yScale(20); }).attr("y2", function(d) {
-        //     //     // console.log(`d[1] is: ${JSON.stringify(d[1])}`)
-        //     //     return new_yScale(20); })
-        //
-        //     // _this.canvas.selectAll('.t-arrow')
-        //     //     .attr('y1', n=>_this.scale(n.singleArrow.y1))
-        //     //     .attr('y2', n=>_this.scale(n.singleArrow.y2))
-        //     // d3.event.transform.rescaleY
-        //     var new_yScale = d3.event.transform.rescaleY(yScale);
-        //     console.log(new_yScale)
-        //     // d3.selectAll('.t-arrow').attr("y1", function(d) { return new_yScale(d[1]);});
-        //     console.log(`d3.event.transform is: ${JSON.stringify(d3.event.transform)}`)
-        //     console.log(`d3.event.transform.rescaleY(yScale) is: ${JSON.stringify(d3.event.transform.rescaleY(yScale))}`)
-        // }
 
         this.canvas.call(this.yZoom)
         // let diff = this.maxTime-this.minTime
